@@ -10,16 +10,32 @@ import android.widget.TextView;
 import android.content.Intent;
 import android.widget.Toast;
 import android.view.View.OnClickListener;
-
+// php post stuff
+import java.net.URL;
+import java.net.URLConnection;
+import java.io.PrintStream;
 
 public class MainActivity extends Activity {
+	
 	Button button;
+	Button openButton = (Button) findViewById(R.id.button1);
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		addListenerOnButton();
+		final int user_id = 1;
+		final int loc_id = 2; // TEST DATA
+		// user's id upon login, location id of recently-searched door
+
+		openButton.setOnClickListener(new View.OnClickListener() {
+    			public void onClick(View v) {
+				authenticateUser(user_id, loc_id);
+			}
+		});
 	}
+
 	public void addListenerOnButton() {
 		 
 		final Context context = this;
@@ -37,6 +53,33 @@ public class MainActivity extends Activity {
 		});
  
 	}
+	
+	public void authenticateUser(int uid, int lid) {
+		//int tmp_user_id=1; int tmp_loc_id=2; // TEST DATA
+		//display.setText("Yo yo"); // DEBUG LINE
+
+		try {
+			// Open a connection to the PHP script
+			URL url = new URL("http://fallon.uni.me:8080/pathPassConnect.php");
+			URLConnection con = url.openConnection();
+
+			// Activate output
+			con.setDoOutput(true);
+			PrintStream ps = new PrintStream(con.getOutputStream());
+
+			// Send parameters for PHP Post request
+			ps.print("userName="+uid);
+			ps.print("&locName="+lid);
+		
+			// Get input stream, process request
+			con.getInputStream();
+ 
+			// Close the print stream
+			ps.close();
+		}
+		catch(Exception e) {}
+	}
+	
 		 //--- text view---
 	//	TextView txtView = (TextView) findViewById(R.id.textView2);
 	    //   final String Label = txtView.getText().toString();
